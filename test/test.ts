@@ -1,14 +1,21 @@
 /// <reference types="node" />
 import debugScreensPlugin from '../src/index.js';
+import type { PluginAPI } from 'tailwindcss/plugin';
 
 // Simple test to verify the plugin works
 console.log('🧪 Testing TailwindCSS Debug Screens Plugin...');
 
-// Mock TailwindCSS API
-const mockAPI = {
-    addComponents: (components: Record<string, any>) => {
+// Mock TailwindCSS API with proper typing
+const mockAPI: PluginAPI = {
+    addBase: () => {},
+    addVariant: () => {},
+    matchVariant: () => {},
+    addUtilities: () => {},
+    matchUtilities: () => {},
+    addComponents: (components) => {
         console.log('✅ addComponents called with:', JSON.stringify(components, null, 2));
     },
+    matchComponents: () => {},
     theme: (path: string, defaultValue?: any) => {
         console.log(`📱 theme('${path}') called`);
 
@@ -30,7 +37,9 @@ const mockAPI = {
         if (path === 'debugScreens.position') return defaultValue;
         
         return defaultValue || {};
-    }
+    },
+    config: () => {},
+    prefix: (className: string) => className,
 };
 
 // Test the plugin
