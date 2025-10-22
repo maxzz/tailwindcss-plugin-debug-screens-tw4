@@ -6,10 +6,10 @@ console.log('🧪 Testing TailwindCSS Debug Screens Plugin...');
 
 // Mock TailwindCSS API
 const mockAPI = {
-    addBase: (styles: Record<string, any>) => {
-        console.log('✅ addBase called with styles:', JSON.stringify(styles, null, 2));
+    addComponents: (components: Record<string, any>) => {
+        console.log('✅ addComponents called with:', JSON.stringify(components, null, 2));
     },
-    theme: (path: string) => {
+    theme: (path: string, defaultValue?: any) => {
         console.log(`📱 theme('${path}') called`);
 
         if (path === 'screens') {
@@ -21,24 +21,24 @@ const mockAPI = {
                 '2xl': '1536px'
             };
         }
-        return {};
+        
+        // Return default values for debugScreens config
+        if (path === 'debugScreens.style') return defaultValue;
+        if (path === 'debugScreens.ignore') return defaultValue;
+        if (path === 'debugScreens.prefix') return defaultValue;
+        if (path === 'debugScreens.selector') return defaultValue;
+        if (path === 'debugScreens.position') return defaultValue;
+        
+        return defaultValue || {};
     }
 };
 
 // Test the plugin
 try {
-    const plugin = debugScreensPlugin({
-        position: 'top-right',
-        style: {
-            backgroundColor: '#1f2937',
-            color: '#f9fafb'
-        }
-    });
+    console.log('🔧 Testing plugin with default configuration...');
 
-    console.log('🔧 Plugin created successfully');
-
-    // Call the plugin function
-    plugin(mockAPI);
+    // Call the plugin function directly (new API style)
+    debugScreensPlugin(mockAPI);
 
     console.log('✅ Plugin executed successfully!');
     console.log('🎉 All tests passed!');

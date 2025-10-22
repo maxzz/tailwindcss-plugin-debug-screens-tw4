@@ -1,119 +1,144 @@
-import type { Config } from 'tailwindcss';
-
 /// <reference types="node" />
+
+/**
+ * Custom version of https://github.com/jorenvanhee/tailwindcss-debug-screens for TailwindCSS v4.x
+ * Converted to TypeScript with ES6 module format
+ * 
+ * Usage: add class 'debug-screens' on any top element
+ */
+
+import type { Config } from 'tailwindcss';
 
 // Define types for TailwindCSS v4.0 plugin API
 interface TailwindAPI {
-    addBase: (styles: Record<string, any>) => void;
-    theme: (path: string) => any;
+    addComponents: (components: Record<string, any>) => void;
+    theme: (path: string, defaultValue?: any) => any;
 }
 
-interface PluginOptions {
-    position?: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
-    style?: {
-        backgroundColor?: string;
-        color?: string;
-        fontSize?: string;
-        fontFamily?: string;
-        padding?: string;
-        borderRadius?: string;
-        zIndex?: string;
-        opacity?: string;
-    };
-    prefix?: string;
+interface DebugScreensStyle {
+    content?: string;
+    position?: string;
+    zIndex?: string;
+    top?: string;
+    bottom?: string;
+    left?: string;
+    right?: string;
+    padding?: string;
+    lineHeight?: string;
+    fontSize?: string;
+    fontFamily?: string;
+    borderRadius?: string;
+    border?: string;
+    backgroundColor?: string;
+    color?: string;
+    boxShadow?: string;
+    [key: string]: any;
+}
+
+interface DebugScreensConfig {
+    style?: Partial<DebugScreensStyle>;
     ignore?: string[];
+    prefix?: string;
+    selector?: string;
+    position?: [string, string];
+}
+
+type ScreenEntry = [string, string];
+
+/**
+ * Convert rem values to pixels
+ */
+function sizeInPixels(size: string): string {
+    if (!size) return '';
+    if (size.includes('rem')) {
+        const remValue = parseInt(size.replace('rem', ''), 10);
+        return `${remValue * 16}px`;
+    }
+    return '';
 }
 
 /**
- * TailwindCSS v4.0 Debug Screens Plugin
- * 
- * Displays the current screen size in development mode to help with responsive design debugging.
- * Shows breakpoint information in a fixed position overlay.
+ * Generate the CSS for the debug display
  */
-export default function debugScreensPlugin(options: PluginOptions = {}): any {
-    const {
-        position = 'bottom-left',
-        style = {},
-        prefix = '',
-        ignore = ['prose']
-    } = options;
+function getDebugDisplayCss(
+    prefix: string,
+    positionY: string,
+    positionX: string,
+    screenEntries: ScreenEntry[]
+): DebugScreensStyle {
+    const firstScreen = screenEntries?.[0];
+    const [name, size] = firstScreen ? firstScreen : ['_', '0'];
+    const pixelSize = sizeInPixels(size);
+    const content = name 
+        ? `'${prefix}less then <${name}> (${pixelSize}${pixelSize ? ':' : ''}${size})'`
+        : `'${prefix}_'`;
 
-    const defaultStyle = {
-        backgroundColor: '#000',
-        color: '#fff',
+    return {
+        content,
+        position: 'fixed',
+        zIndex: '2147483647',
+        [positionY]: '6px',
+        [positionX]: '4px',
+        padding: '0.75rem 0.25rem',
+        lineHeight: '1',
         fontSize: '12px',
-        fontFamily: 'monospace',
-        padding: '4px 8px',
-        borderRadius: '4px',
-        zIndex: '9999',
-        opacity: '0.8',
-        ...style
-    };
-
-    const positionStyles = {
-        'top-left': { top: '0', left: '0' },
-        'top-right': { top: '0', right: '0' },
-        'bottom-left': { bottom: '0', left: '0' },
-        'bottom-right': { bottom: '0', right: '0' }
-    };
-
-    return function ({ addBase, theme }: TailwindAPI) {
-        // Only add debug screens in development mode
-        if (typeof process !== 'undefined' && process.env?.NODE_ENV === 'production') {
-            return;
-        }
-
-        const screens = theme('screens') || {};
-        const breakpoints = Object.entries(screens);
-
-        if (breakpoints.length === 0) {
-            console.warn('No breakpoints found in Tailwind config');
-            return;
-        }
-
-        // Base styles for the debug indicator
-        const baseStyles = {
-            position: 'fixed',
-            ...positionStyles[position],
-            ...defaultStyle,
-            pointerEvents: 'none',
-            fontWeight: 'bold',
-            letterSpacing: '0.05em'
-        };
-
-        // Create CSS for debug indicator
-        const debugStyles: Record<string, any> = {
-            [`${prefix}.debug-screens::before`]: {
-                content: '"XS"',
-                ...baseStyles,
-                display: 'block'
-            }
-        };
-
-        // Add breakpoint-specific styles
-        breakpoints.forEach(([name, size]) => {
-            const breakpointSize = typeof size === 'string' ? size : `${size}px`;
-
-            debugStyles[`@media (min-width: ${breakpointSize})`] = {
-                [`${prefix}.debug-screens::before`]: {
-                    content: `"${name.toUpperCase()}: ${breakpointSize}+"`
-                }
-            };
-        });
-
-        addBase(debugStyles);
-
-        // Add utility class
-        addBase({
-            [`.${prefix}debug-screens`]: {
-                position: 'relative'
-            }
-        });
+        fontFamily: 'sans-serif',
+        borderRadius: '5px',
+        border: '2px solid #6f84f9ff',
+        backgroundColor: '#162ba35f',
+        color: '#2e3982ff',
+        boxShadow: '0 0 2px 2px #7c75fd3d',
     };
 }
 
+/**
+ * TailwindCSS v4.x Debug Screens Plugin
+ * 
+ * Displays the current screen breakpoint in a fixed position overlay.
+ * Helps with responsive design debugging by showing which breakpoint is active.
+ */
+export default function debugScreensPlugin({ addComponents, theme }: TailwindAPI): void {
+    const screens = theme('screens') || {}; // {sm: '640px', md: '768px', lg: '1024px', xl: '1280px', '2xl': '1536px'}
+
+    const userStyles = theme('debugScreens.style', {});
+    const ignoredScreens = theme('debugScreens.ignore', ['dark']);
+    const prefix = theme('debugScreens.prefix', 'Screen: ');
+    const selector = theme('debugScreens.selector', '.debug-screens');
+
+    const defaultPosition: [string, string] = ['bottom', 'left'];
+    const position = theme('debugScreens.position', defaultPosition);
+    const positionY = position[0] || defaultPosition[0];
+    const positionX = position[1] || defaultPosition[1];
+
+    const screenEntries = Object.entries(screens) as ScreenEntry[];
+
+    // Build media queries for each breakpoint
+    const mediaQueries: Record<string, { content: string }> = {};
+
+    Object.entries(screens).forEach(([name, size]) => {
+        if (typeof size !== 'string' || !size) {
+            return;
+        }
+        const pixelSize = sizeInPixels(size);
+        mediaQueries[`@media (min-width: ${size})`] = {
+            content: `"${prefix}<${name}> (${pixelSize}${pixelSize ? ':' : ''}${size})"`,
+        };
+    });
+
+    // Create the debug component
+    const debugComponent = {
+        [`${selector}::before`]: Object.assign(
+            getDebugDisplayCss(prefix, positionY, positionX, screenEntries),
+            mediaQueries,
+            userStyles
+        ),
+    };
+
+    addComponents(debugComponent);
+}
+
 // Export types for TypeScript users
-export type { PluginOptions };
+export type { DebugScreensConfig, DebugScreensStyle };
 
 // Named export for CommonJS compatibility
 export { debugScreensPlugin };

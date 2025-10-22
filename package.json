@@ -1,7 +1,7 @@
 {
     "name": "tailwindcss-plugin-debug-screens-tw4",
     "version": "1.0.0",
-    "description": "A TailwindCSS v4.0 plugin that displays screen sizes for debugging responsive designs",
+    "description": "TailwindCSS v4.x plugin that displays current screen breakpoint in a fixed overlay. TypeScript port of tailwindcss-debug-screens with ES6 modules.",
     "author": "Max Zakharzhevskiy",
     "license": "MIT",
     "repository": {

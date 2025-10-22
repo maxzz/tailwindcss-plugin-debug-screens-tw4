@@ -1,24 +1,26 @@
-# TailwindCSS Debug Screens Plugin for v4.0
+# TailwindCSS Debug Screens Plugin for v4.x
 
-A TailwindCSS v4.0 plugin that displays the current screen size in development mode to help with responsive design debugging.
+A TailwindCSS v4.x plugin that displays the current screen breakpoint in a fixed position overlay to help with responsive design debugging.
+
+Custom TypeScript version of [tailwindcss-debug-screens](https://github.com/jorenvanhee/tailwindcss-debug-screens) adapted for TailwindCSS v4.x with ES6 module format.
 
 ## Features
 
-- 🎯 Shows current breakpoint and screen size
-- 🎨 Customizable position and styling
+- 🎯 Shows current breakpoint name and size with pixel conversion
+- 🎨 Fully customizable position and styling via theme configuration
 - 🚀 TypeScript support with full type definitions
 - 🔧 ES6 module format
-- 🎭 Development-only (automatically disabled in production)
-- 📱 Works with all TailwindCSS v4.0 breakpoints
+- 📱 Works with all TailwindCSS v4.x breakpoints
+- 💅 Beautiful default styling with modern colors and shadows
 
 ## Installation
 
 ```bash
-# Using pnpm (recommended)
-pnpm add tailwindcss-plugin-debug-screens-tw4
-
 # Using npm
 npm install tailwindcss-plugin-debug-screens-tw4
+
+# Using pnpm
+pnpm add tailwindcss-plugin-debug-screens-tw4
 
 # Using yarn
 yarn add tailwindcss-plugin-debug-screens-tw4
@@ -28,7 +30,7 @@ yarn add tailwindcss-plugin-debug-screens-tw4
 
 ### Basic Usage
 
-Add the plugin to your TailwindCSS v4.0 configuration:
+Add the plugin to your TailwindCSS v4.x configuration:
 
 ```javascript
 // tailwind.config.js
@@ -36,12 +38,12 @@ import debugScreens from 'tailwindcss-plugin-debug-screens-tw4';
 
 export default {
   plugins: [
-    debugScreens()
+    debugScreens
   ]
 };
 ```
 
-Then add the debug class to your HTML:
+Then add the debug class to any top element in your HTML:
 
 ```html
 <body class="debug-screens">
@@ -49,28 +51,45 @@ Then add the debug class to your HTML:
 </body>
 ```
 
+You'll see an overlay in the bottom-left corner showing the current breakpoint, like:
+- `Screen: less than <sm> (640px)` when below sm breakpoint
+- `Screen: <md> (768px:768px)` when at md breakpoint
+- And so on...
+
 ### Advanced Configuration
+
+Configure the plugin through your Tailwind theme:
 
 ```javascript
 // tailwind.config.js
 import debugScreens from 'tailwindcss-plugin-debug-screens-tw4';
 
 export default {
-  plugins: [
-    debugScreens({
-      position: 'bottom-right', // 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'
+  theme: {
+    debugScreens: {
+      // Position: [vertical, horizontal]
+      position: ['top', 'right'], // Default: ['bottom', 'left']
+      
+      // Custom prefix for the display text
+      prefix: 'BP: ', // Default: 'Screen: '
+      
+      // Custom selector (if you want a different class name)
+      selector: '.debug-bp', // Default: '.debug-screens'
+      
+      // Screens to ignore
+      ignore: ['dark', 'light'], // Default: ['dark']
+      
+      // Custom styles (merged with defaults)
       style: {
         backgroundColor: '#1f2937',
         color: '#f9fafb',
         fontSize: '14px',
-        fontFamily: 'ui-monospace, monospace',
-        padding: '6px 12px',
-        borderRadius: '6px',
-        opacity: '0.9'
-      },
-      prefix: 'tw-', // Add prefix to avoid conflicts
-      ignore: ['prose', 'container'] // Ignore specific classes
-    })
+        padding: '1rem 0.5rem',
+      }
+    }
+  },
+  plugins: [
+    debugScreens
   ]
 };
 ```
@@ -78,44 +97,58 @@ export default {
 ### TypeScript Usage
 
 ```typescript
-import debugScreens, { type PluginOptions } from 'tailwindcss-plugin-debug-screens-tw4';
+import debugScreens, { type DebugScreensConfig } from 'tailwindcss-plugin-debug-screens-tw4';
+import type { Config } from 'tailwindcss';
 
-const debugOptions: PluginOptions = {
-  position: 'top-right',
-  style: {
-    backgroundColor: '#dc2626',
-    color: '#ffffff'
-  }
-};
-
-export default {
+const config: Config = {
+  theme: {
+    debugScreens: {
+      position: ['top', 'right'],
+      prefix: 'Breakpoint: ',
+      style: {
+        backgroundColor: '#dc2626',
+        color: '#ffffff'
+      }
+    } as DebugScreensConfig
+  },
   plugins: [
-    debugScreens(debugOptions)
+    debugScreens
   ]
 };
+
+export default config;
 ```
 
-## Options
+## Configuration Options
+
+All configuration is done through the `theme.debugScreens` object:
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
-| `position` | `'top-left' \| 'top-right' \| 'bottom-left' \| 'bottom-right'` | `'top-left'` | Position of the debug indicator |
-| `style` | `object` | See below | Custom CSS styles for the indicator |
-| `prefix` | `string` | `''` | Prefix for CSS classes |
-| `ignore` | `string[]` | `['prose']` | Classes to ignore during processing |
+| `position` | `[string, string]` | `['bottom', 'left']` | Position of indicator: `[vertical, horizontal]`. Vertical: `'top'` or `'bottom'`. Horizontal: `'left'` or `'right'` |
+| `prefix` | `string` | `'Screen: '` | Text prefix before breakpoint name |
+| `selector` | `string` | `'.debug-screens'` | CSS selector for the debug class |
+| `ignore` | `string[]` | `['dark']` | Array of screen names to ignore |
+| `style` | `object` | See below | Custom CSS styles (merged with defaults) |
 
 ### Default Styles
 
 ```javascript
 {
-  backgroundColor: '#000',
-  color: '#fff',
+  content: "...", // Generated automatically
+  position: 'fixed',
+  zIndex: '2147483647',
+  bottom: '6px',      // or top: '6px'
+  left: '4px',        // or right: '4px'
+  padding: '0.75rem 0.25rem',
+  lineHeight: '1',
   fontSize: '12px',
-  fontFamily: 'monospace',
-  padding: '4px 8px',
-  borderRadius: '4px',
-  zIndex: '9999',
-  opacity: '0.8'
+  fontFamily: 'sans-serif',
+  borderRadius: '5px',
+  border: '2px solid #6f84f9ff',
+  backgroundColor: '#162ba35f',
+  color: '#2e3982ff',
+  boxShadow: '0 0 2px 2px #7c75fd3d',
 }
 ```
 
