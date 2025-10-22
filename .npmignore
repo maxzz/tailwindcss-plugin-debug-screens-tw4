@@ -1,0 +1,23 @@
+# Exclude from npm package
+node_modules/
+src/
+test/
+.vscode/
+.github/
+
+# Build files
+*.tsbuildinfo
+tsconfig.json
+tsup.config.ts
+
+# Development files
+.env*
+.gitignore
+.eslintrc*
+.prettierrc*
+
+# Documentation (keep README.md)
+docs/
+
+# Logs
+*.log
