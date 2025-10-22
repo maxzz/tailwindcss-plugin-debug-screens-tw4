@@ -43,6 +43,17 @@ export default {
 };
 ```
 
+```javascript
+// tailwind.config.js from CommonJS
+const { debugScreensPlugin } = require('tailwindcss-plugin-debug-screens-tw4');
+
+module.exports = {
+  plugins: [
+    debugScreensPlugin
+  ]
+};
+```
+
 Then add the debug class to any top element in your HTML:
 
 ```html
@@ -157,7 +168,7 @@ All configuration is done through the `theme.debugScreens` object:
 ### Prerequisites
 
 - Node.js >= 18.0.0
-- pnpm >= 8.0.0
+- pnpm >= 10.19.0
 
 ### Setup
 
