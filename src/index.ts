@@ -7,18 +7,15 @@
 // Import proper types from TailwindCSS
 import type { Config } from 'tailwindcss';
 
-// Extract the PluginAPI type from the Config's plugins array
-type ExtractPluginAPI<T> = T extends Array<infer U>
-    ? U extends (api: infer API) => void
-        ? API
-        : U extends { handler: (api: infer API) => void }
-            ? API
-            : U extends (...args: any[]) => { handler: (api: infer API) => void }
-                ? API
-                : never
-    : never;
+// Extract the Plugin function type from Config
+type PluginArray = NonNullable<Config['plugins']>;
+type PluginElement = PluginArray[number];
 
-type PluginAPI = ExtractPluginAPI<NonNullable<Config['plugins']>>;
+// Extract the PluginFn type (plain function plugins)
+type PluginFn = Extract<PluginElement, (api: any) => void>;
+
+// Extract PluginAPI from the PluginFn's first parameter
+type PluginAPI = Parameters<PluginFn>[0];
 
 export type DebugScreensConfig = {
     style?: Partial<CSSStyleDeclaration>;
