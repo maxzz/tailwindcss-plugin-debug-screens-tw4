@@ -1,95 +1,69 @@
-/// <reference types="node" />
-
 /**
  * Custom version of https://github.com/jorenvanhee/tailwindcss-debug-screens for TailwindCSS v4.x
  * Converted to TypeScript with ES6 module format
- * 
  * Usage: add class 'debug-screens' on any top element
  */
 
+// Import proper types from TailwindCSS
 import type { Config } from 'tailwindcss';
 
-// Define types for TailwindCSS v4.0 plugin API
-interface TailwindAPI {
-    addComponents: (components: Record<string, any>) => void;
-    theme: (path: string, defaultValue?: any) => any;
-}
+// Re-export the plugin types from the internal types module
+type PluginAPI = {
+    addBase(base: CssInJs): void;
+    addVariant(name: string, variant: string | string[] | CssInJs): void;
+    matchVariant<T = string>(name: string, cb: (value: T | string, extra: {
+        modifier: string | null;
+    }) => string | string[], options?: {
+        values?: Record<string, T>;
+        sort?(a: { value: T | string; modifier: string | null }, b: { value: T | string; modifier: string | null }): number;
+    }): void;
+    addUtilities(utilities: Record<string, CssInJs | CssInJs[]> | Record<string, CssInJs | CssInJs[]>[], options?: {}): void;
+    matchUtilities(utilities: Record<string, (value: string, extra: {
+        modifier: string | null;
+    }) => CssInJs | CssInJs[]>, options?: Partial<{
+        type: string | string[];
+        supportsNegativeValues: boolean;
+        values: Record<string, string>;
+        modifiers: 'any' | Record<string, string>;
+    }>): void;
+    addComponents(utilities: Record<string, CssInJs> | Record<string, CssInJs>[], options?: {}): void;
+    matchComponents(utilities: Record<string, (value: string, extra: {
+        modifier: string | null;
+    }) => CssInJs>, options?: Partial<{
+        type: string | string[];
+        supportsNegativeValues: boolean;
+        values: Record<string, string>;
+        modifiers: 'any' | Record<string, string>;
+    }>): void;
+    theme(path: string, defaultValue?: any): any;
+    config(path?: string, defaultValue?: any): any;
+    prefix(className: string): string;
+};
 
-interface DebugScreensStyle {
-    content?: string;
-    position?: string;
-    zIndex?: string;
-    top?: string;
-    bottom?: string;
-    left?: string;
-    right?: string;
-    padding?: string;
-    lineHeight?: string;
-    fontSize?: string;
-    fontFamily?: string;
-    borderRadius?: string;
-    border?: string;
-    backgroundColor?: string;
-    color?: string;
-    boxShadow?: string;
-    [key: string]: any;
-}
+type CssInJs = {
+    [key: string]: string | string[] | CssInJs | CssInJs[];
+};
 
-interface DebugScreensConfig {
-    style?: Partial<DebugScreensStyle>;
+type PluginFn = (api: PluginAPI) => void;
+type PluginWithConfig = {
+    handler: PluginFn;
+    config?: Config;
+};
+type PluginWithOptions<T> = {
+    (options?: T): PluginWithConfig;
+    __isOptionsFunction: true;
+};
+type Plugin = PluginFn | PluginWithConfig | PluginWithOptions<any>;
+
+export type DebugScreensConfig = {
+    style?: Partial<CSSStyleDeclaration>;
     ignore?: string[];
     prefix?: string;
     selector?: string;
     position?: [string, string];
-}
+};
 
 type ScreenEntry = [string, string];
-
-/**
- * Convert rem values to pixels
- */
-function sizeInPixels(size: string): string {
-    if (!size) return '';
-    if (size.includes('rem')) {
-        const remValue = parseInt(size.replace('rem', ''), 10);
-        return `${remValue * 16}px`;
-    }
-    return '';
-}
-
-/**
- * Generate the CSS for the debug display
- */
-function getDebugDisplayCss(
-    prefix: string,
-    positionY: string,
-    positionX: string,
-    screenEntries: ScreenEntry[]
-): DebugScreensStyle {
-    const firstScreen = screenEntries?.[0];
-    const [name, size] = firstScreen ? firstScreen : ['_', '0'];
-    const pixelSize = sizeInPixels(size);
-    const content = name 
-        ? `'${prefix}less then <${name}> (${pixelSize}${pixelSize ? ':' : ''}${size})'`
-        : `'${prefix}_'`;
-
-    return {
-        content,
-        position: 'fixed',
-        zIndex: '2147483647',
-        [positionY]: '6px',
-        [positionX]: '4px',
-        padding: '0.75rem 0.25rem',
-        lineHeight: '1',
-        fontSize: '12px',
-        fontFamily: 'sans-serif',
-        borderRadius: '5px',
-        border: '2px solid #6f84f9ff',
-        backgroundColor: '#162ba35f',
-        color: '#2e3982ff',
-        boxShadow: '0 0 2px 2px #7c75fd3d',
-    };
-}
 
 /**
  * TailwindCSS v4.x Debug Screens Plugin
@@ -97,7 +71,7 @@ function getDebugDisplayCss(
  * Displays the current screen breakpoint in a fixed position overlay.
  * Helps with responsive design debugging by showing which breakpoint is active.
  */
-export default function debugScreensPlugin({ addComponents, theme }: TailwindAPI): void {
+export default function debugScreensPlugin({ addComponents, theme }: PluginAPI): void {
     const screens = theme('screens') || {}; // {sm: '640px', md: '768px', lg: '1024px', xl: '1280px', '2xl': '1536px'}
 
     const userStyles = theme('debugScreens.style', {});
@@ -113,7 +87,7 @@ export default function debugScreensPlugin({ addComponents, theme }: TailwindAPI
     const screenEntries = Object.entries(screens) as ScreenEntry[];
 
     // Build media queries for each breakpoint
-    const mediaQueries: Record<string, { content: string }> = {};
+    const mediaQueries: Record<string, { content: string; }> = {};
 
     Object.entries(screens).forEach(([name, size]) => {
         if (typeof size !== 'string' || !size) {
@@ -137,8 +111,46 @@ export default function debugScreensPlugin({ addComponents, theme }: TailwindAPI
     addComponents(debugComponent);
 }
 
-// Export types for TypeScript users
-export type { DebugScreensConfig, DebugScreensStyle };
-
 // Named export for CommonJS compatibility
 export { debugScreensPlugin };
+
+/**
+ * Generate the CSS for the debug display
+ */
+function getDebugDisplayCss(prefix: string, positionY: string, positionX: string, screenEntries: ScreenEntry[]): Partial<CSSStyleDeclaration> {
+    const firstScreen = screenEntries?.[0];
+    const [name, size] = firstScreen ? firstScreen : ['_', '0'];
+    const pixelSize = sizeInPixels(size);
+    const content = name
+        ? `'${prefix}less then <${name}> (${pixelSize}${pixelSize ? ':' : ''}${size})'`
+        : `'${prefix}_'`;
+    return {
+        content,
+        position: 'fixed',
+        zIndex: '2147483647',
+        [positionY]: '6px',
+        [positionX]: '4px',
+        padding: '0.75rem 0.25rem',
+        lineHeight: '1',
+        fontSize: '12px',
+        fontFamily: 'sans-serif',
+        borderRadius: '5px',
+        border: '2px solid #6f84f9ff',
+        backgroundColor: '#162ba35f',
+        color: '#2e3982ff',
+        boxShadow: '0 0 2px 2px #7c75fd3d',
+    };
+}
+
+/**
+ * Convert rem values to pixels
+ */
+function sizeInPixels(size: string): string {
+    if (!size || typeof size !== 'string') {
+        return '';
+    }
+    const rv = size.includes('rem')
+        ? `${parseInt(size.replace('rem', ''), 10) * 16}px`
+        : '';
+    return rv;
+}
