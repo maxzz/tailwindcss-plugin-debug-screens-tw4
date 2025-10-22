@@ -1,72 +1,82 @@
 {
-  "version": "2.0.0",
-  "tasks": [
-    {
-      "label": "build",
-      "type": "shell",
-      "command": "pnpm",
-      "args": ["build"],
-      "group": "build",
-      "presentation": {
-        "echo": true,
-        "reveal": "always",
-        "panel": "new"
-      },
-      "problemMatcher": ["$tsc"]
-    },
-    {
-      "label": "dev",
-      "type": "shell", 
-      "command": "pnpm",
-      "args": ["dev"],
-      "group": "build",
-      "isBackground": true,
-      "presentation": {
-        "echo": true,
-        "reveal": "always",
-        "panel": "new"
-      },
-      "problemMatcher": {
-        "owner": "typescript",
-        "fileLocation": "relative",
-        "pattern": {
-          "regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
-          "file": 1,
-          "line": 2,
-          "column": 3,
-          "severity": 4,
-          "message": 5
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",
+            "type": "shell",
+            "command": "pnpm",
+            "args": [
+                "build"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "panel": "new"
+            },
+            "problemMatcher": [
+                "$tsc"
+            ]
         },
-        "background": {
-          "activeOnStart": true,
-          "beginsPattern": "^.*Build start.*$",
-          "endsPattern": "^.*Build success.*$"
+        {
+            "label": "dev",
+            "type": "shell",
+            "command": "pnpm",
+            "args": [
+                "dev"
+            ],
+            "group": "build",
+            "isBackground": true,
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "panel": "new"
+            },
+            "problemMatcher": {
+                "owner": "typescript",
+                "fileLocation": "relative",
+                "pattern": {
+                    "regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
+                    "file": 1,
+                    "line": 2,
+                    "column": 3,
+                    "severity": 4,
+                    "message": 5
+                },
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": "^.*Build start.*$",
+                    "endsPattern": "^.*Build success.*$"
+                }
+            }
+        },
+        {
+            "label": "test",
+            "type": "shell",
+            "command": "pnpm",
+            "args": [
+                "test"
+            ],
+            "group": "test",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "panel": "new"
+            }
+        },
+        {
+            "label": "clean",
+            "type": "shell",
+            "command": "pnpm",
+            "args": [
+                "clean"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "panel": "new"
+            }
         }
-      }
-    },
-    {
-      "label": "test",
-      "type": "shell",
-      "command": "pnpm", 
-      "args": ["test"],
-      "group": "test",
-      "presentation": {
-        "echo": true,
-        "reveal": "always",
-        "panel": "new"
-      }
-    },
-    {
-      "label": "clean",
-      "type": "shell",
-      "command": "pnpm",
-      "args": ["clean"],
-      "group": "build",
-      "presentation": {
-        "echo": true,
-        "reveal": "always",
-        "panel": "new"
-      }
-    }
-  ]
+    ]
 }

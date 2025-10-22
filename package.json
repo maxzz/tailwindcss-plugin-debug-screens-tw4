@@ -1,60 +1,60 @@
 {
-  "name": "tailwindcss-plugin-debug-screens-tw4",
-  "version": "1.0.0",
-  "description": "A TailwindCSS v4.0 plugin that displays screen sizes for debugging responsive designs",
-  "type": "module",
-  "main": "./dist/index.js",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+    "name": "tailwindcss-plugin-debug-screens-tw4",
+    "version": "1.0.0",
+    "description": "A TailwindCSS v4.0 plugin that displays screen sizes for debugging responsive designs",
+    "author": "Max Zakharzhevskiy",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/maxzz/tailwindcss-plugin-debug-screens-tw4.git"
+    },
+    "bugs": {
+        "url": "https://github.com/maxzz/tailwindcss-plugin-debug-screens-tw4/issues"
+    },
+    "homepage": "https://github.com/maxzz/tailwindcss-plugin-debug-screens-tw4",
+    "engines": {
+        "node": ">=18.0.0"
+    },
+    "type": "module",
+    "main": "./dist/index.js",
+    "module": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+        ".": {
+            "import": "./dist/index.js",
+            "types": "./dist/index.d.ts"
+        }
+    },
+    "files": [
+        "dist",
+        "README.md"
+    ],
+    "keywords": [
+        "tailwindcss",
+        "plugin",
+        "debug",
+        "responsive",
+        "breakpoints",
+        "screen-sizes",
+        "development"
+    ],
+    "peerDependencies": {
+        "tailwindcss": "^4.0.0-alpha || ^3.0.0"
+    },
+    "devDependencies": {
+        "@types/node": "^20.8.0",
+        "rimraf": "^5.0.0",
+        "tsx": "^4.20.6",
+        "tsup": "^7.2.0",
+        "typescript": "^5.2.0"
+    },
+    "scripts": {
+        "build": "tsup",
+        "dev": "tsup --watch",
+        "debug": "tsx src/index.ts",
+        "test": "tsx test/test.ts",
+        "clean": "rimraf dist",
+        "prepublishOnly": "pnpm build",
+        "deploy": "npm publish"
     }
-  },
-  "files": [
-    "dist",
-    "README.md"
-  ],
-  "scripts": {
-    "build": "tsup",
-    "dev": "tsup --watch",
-    "debug": "tsx src/index.ts",
-    "test": "tsx test/test.ts",
-    "prepublishOnly": "pnpm build",
-    "deploy": "npm publish",
-    "clean": "rimraf dist"
-  },
-  "keywords": [
-    "tailwindcss",
-    "plugin",
-    "debug",
-    "responsive",
-    "breakpoints",
-    "screen-sizes",
-    "development"
-  ],
-  "author": "",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": ""
-  },
-  "bugs": {
-    "url": ""
-  },
-  "homepage": "",
-  "peerDependencies": {
-    "tailwindcss": "^4.0.0-alpha || ^3.0.0"
-  },
-  "devDependencies": {
-    "@types/node": "^20.8.0",
-    "rimraf": "^5.0.0",
-    "tsx": "^4.20.6",
-    "tsup": "^7.2.0",
-    "typescript": "^5.2.0"
-  },
-  "engines": {
-    "node": ">=18.0.0"
-  }
 }

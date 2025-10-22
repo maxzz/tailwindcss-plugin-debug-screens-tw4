@@ -1,44 +1,44 @@
 {
-  "version": "0.2.0",
-  "configurations": [
-    {
-      "name": "Debug Plugin",
-      "type": "node",
-      "request": "launch",
-      "program": "${workspaceFolder}/src/index.ts",
-      "runtimeExecutable": "tsx",
-      "runtimeArgs": [],
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
-      "envFile": "${workspaceFolder}/.env",
-      "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen"
-    },
-    {
-      "name": "Debug Test",
-      "type": "node", 
-      "request": "launch",
-      "program": "${workspaceFolder}/test/test.ts",
-      "runtimeExecutable": "tsx",
-      "runtimeArgs": [],
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
-      "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen"
-    },
-    {
-      "name": "Build and Debug",
-      "type": "node",
-      "request": "launch",
-      "preLaunchTask": "build",
-      "program": "${workspaceFolder}/dist/index.js",
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
-      "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen"
-    }
-  ]
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug Plugin",
+            "type": "node",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/index.ts",
+            "runtimeExecutable": "tsx",
+            "runtimeArgs": [],
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "envFile": "${workspaceFolder}/.env",
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen"
+        },
+        {
+            "name": "Debug Test",
+            "type": "node",
+            "request": "launch",
+            "program": "${workspaceFolder}/test/test.ts",
+            "runtimeExecutable": "tsx",
+            "runtimeArgs": [],
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen"
+        },
+        {
+            "name": "Build and Debug",
+            "type": "node",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/dist/index.js",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen"
+        }
+    ]
 }
