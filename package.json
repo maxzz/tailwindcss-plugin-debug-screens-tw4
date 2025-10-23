@@ -1,6 +1,6 @@
 {
     "name": "tailwindcss-plugin-debug-screens-tw4",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "TailwindCSS v4.x plugin that displays current screen breakpoint in a fixed overlay. TypeScript port of tailwindcss-debug-screens with ES6 modules.",
     "author": "Max Zakharzhevskiy",
     "license": "MIT",
@@ -16,13 +16,19 @@
         "node": ">=18.0.0"
     },
     "type": "module",
-    "main": "./dist/index.js",
+    "main": "./dist/index.cjs",
     "module": "./dist/index.js",
     "types": "./dist/index.d.ts",
     "exports": {
         ".": {
-            "import": "./dist/index.js",
-            "types": "./dist/index.d.ts"
+            "import": {
+                "types": "./dist/index.d.ts",
+                "default": "./dist/index.js"
+            },
+            "require": {
+                "types": "./dist/index.d.cts",
+                "default": "./dist/index.cjs"
+            }
         }
     },
     "files": [
