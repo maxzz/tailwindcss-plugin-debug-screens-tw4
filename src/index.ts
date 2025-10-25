@@ -69,7 +69,7 @@ export default function debugScreensPlugin(pluginApi : PluginAPI): void {
 }
 
 // Named export for CommonJS compatibility
-export { debugScreensPlugin };
+export { debugScreensPlugin, debugStylesPlugin };
 
 /**
  * Generate the CSS for the debug display
