@@ -6,6 +6,7 @@
 
 // Import proper types from TailwindCSS
 import type { PluginAPI } from 'tailwindcss/plugin';
+import { debugStylesPlugin } from './tailwind-plugin-debug-styles';
 
 export type DebugScreensConfig = {
     style?: Partial<CSSStyleDeclaration>;
@@ -23,7 +24,9 @@ type ScreenEntry = [string, string];
  * Displays the current screen breakpoint in a fixed position overlay.
  * Helps with responsive design debugging by showing which breakpoint is active.
  */
-export default function debugScreensPlugin({ addComponents, theme }: PluginAPI): void {
+export default function debugScreensPlugin(pluginApi : PluginAPI): void {
+    const { addComponents, theme } = pluginApi;
+
     const screens = theme('screens') || {}; // {sm: '640px', md: '768px', lg: '1024px', xl: '1280px', '2xl': '1536px'}
 
     const userStyles = theme('debugScreens.style', {});
@@ -61,6 +64,8 @@ export default function debugScreensPlugin({ addComponents, theme }: PluginAPI):
     };
 
     addComponents(debugComponent);
+
+    debugStylesPlugin(pluginApi);
 }
 
 // Named export for CommonJS compatibility
