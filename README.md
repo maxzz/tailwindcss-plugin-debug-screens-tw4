@@ -1,8 +1,13 @@
-# TailwindCSS Debug Screens Plugin for v4.x
+# TailwindCSS Debug Plugins for v4.x
 
-A TailwindCSS v4.x plugin that displays the current screen breakpoint in a fixed position overlay to help with responsive design debugging.
+A collection of TailwindCSS v4.x plugins for debugging layouts and responsive designs.
 
 Custom TypeScript version of [tailwindcss-debug-screens](https://github.com/jorenvanhee/tailwindcss-debug-screens) adapted for TailwindCSS v4.x with ES6 module format.
+
+## Plugins Included
+
+1. **Debug Screens** - Displays the current screen breakpoint in a fixed position overlay
+2. **Debug Styles** - Visual debugging utilities with outlines, dots, and grid patterns
 
 ## Features
 
@@ -12,6 +17,7 @@ Custom TypeScript version of [tailwindcss-debug-screens](https://github.com/jore
 - 🔧 ES6 module format
 - 📱 Works with all TailwindCSS v4.x breakpoints
 - 💅 Beautiful default styling with modern colors and shadows
+- 🔍 Visual debugging utilities for layout inspection
 
 ## Installation
 
@@ -28,7 +34,9 @@ yarn add tailwindcss-plugin-debug-screens-tw4
 
 ## Usage
 
-### Basic Usage
+### Debug Screens Plugin
+
+#### Basic Usage
 
 Add the plugin to your TailwindCSS v4.x configuration:
 
@@ -67,7 +75,7 @@ You'll see an overlay in the bottom-left corner showing the current breakpoint, 
 - `Screen: <md> (768px:768px)` when at md breakpoint
 - And so on...
 
-### Advanced Configuration
+#### Advanced Configuration
 
 Configure the plugin through your Tailwind theme:
 
@@ -104,6 +112,145 @@ export default {
   ]
 };
 ```
+
+### Debug Styles Plugin
+
+The debug styles plugin provides visual debugging utilities to help you understand your layout structure.
+
+#### Setup
+
+```javascript
+// tailwind.config.js - ES Modules
+import debugScreens, { debugStylesPlugin } from 'tailwindcss-plugin-debug-screens-tw4';
+
+export default {
+  plugins: [
+    debugScreens,
+    debugStylesPlugin
+  ]
+};
+```
+
+```javascript
+// tailwind.config.js - CommonJS
+const { debugScreensPlugin, debugStylesPlugin } = require('tailwindcss-plugin-debug-screens-tw4');
+
+module.exports = {
+  plugins: [
+    debugScreensPlugin,
+    debugStylesPlugin
+  ]
+};
+```
+
+#### Available Classes
+
+**Outline Debuggers** - Add colored outlines to all child elements:
+
+```html
+<!-- Gold outline on all child elements -->
+<div class="debug">
+  <div>Element 1</div>
+  <div>Element 2</div>
+  <p>Paragraph</p>
+</div>
+
+<!-- White outline on all child elements -->
+<div class="debug-white">
+  <header>Header</header>
+  <main>Main content</main>
+  <footer>Footer</footer>
+</div>
+
+<!-- Black outline on all child elements -->
+<section class="debug-black">
+  <article>Article 1</article>
+  <article>Article 2</article>
+</section>
+```
+
+**Grid Backgrounds** - Add grid patterns to visualize spacing:
+
+```html
+<!-- 8px grid pattern -->
+<div class="debug-grid">
+  <p>Content with 8px grid background</p>
+</div>
+
+<!-- 16px grid pattern -->
+<div class="debug-grid-16">
+  <p>Content with 16px grid background</p>
+</div>
+```
+
+**Dot Pattern** - Add a dot pattern background:
+
+```html
+<!-- Dot pattern for visual reference -->
+<div class="debug-dots">
+  <p>Content with dot pattern background</p>
+</div>
+```
+
+#### Practical Examples
+
+**Debug a complex layout:**
+
+```html
+<div class="debug">
+  <header class="flex justify-between p-4">
+    <div>Logo</div>
+    <nav>
+      <a href="#">Home</a>
+      <a href="#">About</a>
+    </nav>
+  </header>
+  <main class="grid grid-cols-3 gap-4">
+    <aside>Sidebar</aside>
+    <article>Content</article>
+    <aside>Widgets</aside>
+  </main>
+</div>
+```
+
+**Debug with grid alignment:**
+
+```html
+<div class="debug-grid-16 p-8">
+  <div class="grid grid-cols-4 gap-4">
+    <div class="bg-blue-500 p-4">Box 1</div>
+    <div class="bg-green-500 p-4">Box 2</div>
+    <div class="bg-red-500 p-4">Box 3</div>
+    <div class="bg-yellow-500 p-4">Box 4</div>
+  </div>
+</div>
+```
+
+**Combine multiple debug utilities:**
+
+```html
+<body class="debug-screens">
+  <div class="debug-grid">
+    <div class="debug-white">
+      <header>Header with outline debugger</header>
+      <main>Main content</main>
+    </div>
+  </div>
+</body>
+```
+
+#### CSS Details
+
+| Class | Effect | Use Case |
+|-------|--------|----------|
+| `.debug` | Gold outline on all children | General layout debugging |
+| `.debug-white` | White outline on all children | Dark backgrounds |
+| `.debug-black` | Black outline on all children | Light backgrounds |
+| `.debug-dots` | Black dots on transparent bg (10px spacing) | Alignment and spacing reference |
+| `.debug-grid` | 8px grid pattern | Fine-grained spacing checks |
+| `.debug-grid-16` | 16px grid pattern | Larger spacing and alignment |
+
+**Note:** These classes are meant for development only. Remove them before deploying to production!
 
 ### TypeScript Usage
 
